@@ -1,6 +1,6 @@
 // api/projects.js
 import { getJSON, putJSON, defaultGithubProjects, defaultDockerProjects } from '../lib/kv.js';
-import { fetchVersionsFromB2 } from '../lib/b2.js';
+import { fetchVersionsFromB2 } from '../lib/utils.js';
 
 export async function handleProjects(type, env) {
   const kvKey = type === 'github' ? 'projects_github' : 'projects_docker';
