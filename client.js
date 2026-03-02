@@ -1225,7 +1225,7 @@ export const clientJS = `
     tabs.forEach(tab => tab.addEventListener('click', () => setActiveTab(tab.dataset.tab)));
 
     // ============================================================================
-    // 15. 任务轮询
+    // 15. 任务轮询（改进：显示失败文件）
     // ============================================================================
 
     function pollTaskStatus(taskId) {
@@ -1234,7 +1234,12 @@ export const clientJS = `
             const task = await res.json();
             if (task.status === 'completed') {
                 clearInterval(interval);
-                alert(\`备份完成！共上传 \${task.totalFiles} 个文件\`);
+                const failedCount = task.failedFiles ? task.failedFiles.length : 0;
+                if (failedCount > 0) {
+                    alert(\`备份完成！共上传 \${task.processedFiles} 个文件，失败 \${failedCount} 个文件。\`);
+                } else {
+                    alert(\`备份完成！共上传 \${task.totalFiles} 个文件\`);
+                }
                 location.reload();
             } else if (task.status === 'failed') {
                 clearInterval(interval);
