@@ -1,7 +1,7 @@
 // queue.js
 import { processBatch } from './lib/batchProcessor.js';
 import { getRepoFileTree } from './lib/githubDownloader.js';
-import { createMasterTask, completeMasterTask, updateMasterTaskProgress } from './lib/taskManager.js';
+import { createMasterTask, completeMasterTask } from './lib/taskManager.js';
 
 export async function queueHandler(batch, env, ctx) {
     for (const message of batch.messages) {
