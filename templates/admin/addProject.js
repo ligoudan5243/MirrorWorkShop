@@ -36,17 +36,19 @@ export const addProjectHTML = `
     <div id="queueTaskList"></div>
 </div>
 
-<!-- 选择存储桶模态框 -->
+<!-- 选择存储桶模态框（卡片样式） -->
 <div class="modal-overlay" id="selectBucketModal" style="display: none;">
-    <div class="modal-content" style="max-width: 400px;">
+    <div class="modal-content" style="max-width: 500px;">
         <div class="modal-header">
             <h3>选择存储桶</h3>
             <div class="modal-close" id="closeSelectBucketModal"><i class="fas fa-times"></i></div>
         </div>
-        <div id="bucketListRadio" style="margin: 1rem 0;">
-            <!-- 动态生成单选按钮 -->
+        <div id="bucketCardGrid" class="buckets-grid" style="max-height: 300px; overflow-y: auto; margin: 1rem 0;">
+            <!-- 桶卡片将动态渲染 -->
         </div>
-        <button class="modal-btn" id="confirmSelectBucketBtn">确定</button>
+        <div style="display: flex; justify-content: flex-end;">
+            <button class="modal-btn" id="confirmSelectBucketBtn" style="width: auto; padding: 0.5rem 2rem;">确定</button>
+        </div>
     </div>
 </div>
 `;
