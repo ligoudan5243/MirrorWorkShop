@@ -5,6 +5,7 @@ import { handleBuckets } from './buckets.js';
 import { handleConfig } from './config.js';
 import { handleTask } from './task.js';
 import { handleQueueStatus } from '../queue.js';
+import { handleVerify } from './verify.js'; // 新增
 
 export async function handleAPI(request, env) {
   const url = new URL(request.url);
@@ -34,6 +35,9 @@ export async function handleAPI(request, env) {
   }
   if (path === 'queue/status' && method === 'GET') {
     return handleQueueStatus(request, env);
+  }
+  if (path === 'verify-bucket' && method === 'POST') { // 新增
+    return handleVerify(request, env);
   }
   return new Response('API not found', { status: 404 });
 }
