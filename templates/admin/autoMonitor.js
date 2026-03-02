@@ -1,7 +1,10 @@
 // templates/admin/autoMonitor.js
 export const autoMonitorHTML = `
 <div class="card">
-    <div class="card-header"><h2>自动监控</h2></div>
+    <div class="card-header">
+        <h2>自动监控</h2>
+        <button class="btn-icon" id="saveMonitorBtn"><i class="fas fa-save"></i> 保存</button>
+    </div>
     <div class="monitor-row">
         <div class="toggle-switch">
             <span>监控开关</span>
@@ -18,7 +21,7 @@ export const autoMonitorHTML = `
     </div>
     <div class="days-input">
         <span>监控日期：每</span>
-        <input type="number" value="1" min="1" max="30"> 天一次
+        <input type="number" id="monitorDays" value="1" min="1" max="30"> 天一次
     </div>
 </div>
 `;
