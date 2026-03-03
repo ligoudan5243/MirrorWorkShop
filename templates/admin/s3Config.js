@@ -46,21 +46,20 @@ export const s3ConfigHTML = `
                 <label>自定义桶名 <span style="color:#ef4444;">*</span></label>
                 <input type="text" id="bucketCustomName" placeholder="例如: 我的默认桶" required>
             </div>
-            <!-- 内部ID显示区（只读） -->
-            <div class="input-group" style="margin-bottom: 0.5rem;">
-                <label>内部ID (自动生成)</label>
-                <div style="background: #f1f5f9; padding: 0.7rem 1rem; border-radius: 60px; color: #334155; font-family: monospace;" id="displayInternalId"></div>
-                <small style="color:#64748b;">系统生成的唯一标识，用于内部引用</small>
+            <!-- 内部ID显示区（纯文本） -->
+            <div style="margin-top: 0.5rem; margin-bottom: 1rem;">
+                <span style="color:#64748b; font-size:0.85rem;">系统生成的唯一标识，用于内部引用</span>
+                <div style="font-family: monospace; background: #f1f5f9; padding: 0.3rem 0.8rem; border-radius: 6px; display: inline-block; margin-top: 0.2rem;" id="displayInternalId"></div>
+                <input type="hidden" id="internalId">
             </div>
-            <input type="hidden" id="internalId">
 
             <div class="input-group">
                 <label>应用密钥ID (keyID) <span style="color:#ef4444;">*</span></label>
-                <input type="text" id="bucketKeyID" placeholder="例如: 006eb9a593b3d8a0000000001" required>
+                <input type="text" id="bucketKeyID" placeholder="例如: 006ebb39a593d8a0000000002" required>
             </div>
             <div class="input-group">
                 <label>应用密钥 (applicationKey) <span style="color:#ef4444;">*</span></label>
-                <input type="password" id="bucketAppKey" placeholder="例如: KLOoy06N03sB72+HKP16sWJHavSrHQU" required>
+                <input type="password" id="bucketAppKey" placeholder="例如: K006N6aOLs31B7svSroyWHKP2+HJHQU" required>
             </div>
             <div class="input-group">
                 <label>存储桶名 (bucketName) <span style="color:#ef4444;">*</span></label>
