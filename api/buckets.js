@@ -8,9 +8,14 @@ export async function handleBuckets(request, env) {
     return Response.json(buckets);
   }
   if (method === 'POST') {
-    const newBuckets = await request.json();
-    await putJSON(env.B2_KV, 'buckets', newBuckets);
-    return Response.json({ success: true });
+    try {
+      const newBuckets = await request.json();
+      await putJSON(env.B2_KV, 'buckets', newBuckets);
+      return Response.json({ success: true });
+    } catch (error) {
+      console.error('保存桶失败:', error);
+      return new Response(JSON.stringify({ error: error.message }), { status: 500 });
+    }
   }
   return new Response('Method not allowed', { status: 405 });
 }
