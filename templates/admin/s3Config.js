@@ -62,16 +62,22 @@ export const s3ConfigHTML = `
                 <label>端点 (Endpoint) <span style="color:#ef4444;">*</span></label>
                 <input type="text" id="bucketEndpoint" placeholder="例如: s3.ca-east-006.backblazeb2.com" required>
             </div>
+            <!-- 内部ID（只读，自动生成） -->
             <div class="input-group">
-                <label>桶标识 (可选)</label>
-                <input type="text" id="bucketId" placeholder="留空则不在Snippets中显示">
-                <small style="color:#64748b;">填写后将在Snippets规则中显示为键名</small>
+                <label>内部ID (自动生成，不可修改)</label>
+                <input type="text" id="internalId" readonly style="background-color: #f1f5f9; color: #64748b;">
             </div>
+            <!-- 桶标识（可选，用于Snippets） -->
+            <div class="input-group">
+                <label>桶标识 (可选，用于Snippets)</label>
+                <input type="text" id="bucketSnippetId" placeholder="例如: default">
+                <small style="color:#64748b;">填写后将出现在Snippets规则中，留空则不显示</small>
+            </div>
+            <input type="hidden" id="editingIndex" value="-1">
             <div style="display: flex; gap: 0.5rem; margin-top: 1rem;">
                 <button type="button" class="btn-icon" id="verifyBucketBtn" style="background: #3b82f6; color: white;">验证连接</button>
                 <button type="submit" class="modal-btn" id="saveBucketBtn" style="flex: 1;">保存</button>
             </div>
-            <input type="hidden" id="editingIndex" value="-1">
         </form>
     </div>
 </div>

@@ -49,7 +49,7 @@ export const clientJS = `
             buckets = await bucketsRes.json();
             config = await configRes.json();
 
-            // 为每个桶添加模拟使用量（实际应从B2获取，但为了演示保留随机数）
+            // 为每个桶添加模拟使用量（实际应从B2获取）
             buckets = buckets.map(b => ({
                 ...b,
                 usage: b.usage !== undefined ? b.usage : Math.random() * 10,
@@ -171,11 +171,11 @@ export const clientJS = `
             });
         });
 
-        // 更新Snippets JSON显示
+        // 更新Snippets JSON显示（使用 snippetId）
         if (snippetsJson) {
-            const validBuckets = buckets.filter(b => b.id && b.id.trim() !== '');
+            const validBuckets = buckets.filter(b => b.snippetId && b.snippetId.trim() !== '');
             const snippets = validBuckets.reduce((acc, b) => {
-                acc[b.customName] = b.id;
+                acc[b.customName] = b.snippetId;
                 return acc;
             }, {});
             snippetsJson.value = JSON.stringify(snippets, null, 2);
@@ -198,7 +198,8 @@ export const clientJS = `
     const bucketAppKey = safeGet('bucketAppKey');
     const bucketName = safeGet('bucketName');
     const bucketEndpoint = safeGet('bucketEndpoint');
-    const bucketIdInput = safeGet('bucketId');
+    const internalId = safeGet('internalId');
+    const bucketSnippetId = safeGet('bucketSnippetId');
     const editingIndex = safeGet('editingIndex');
     const importJsonBtn = safeGet('importJsonBtn');
     const saveJsonBtn = safeGet('saveJsonBtn');
@@ -220,7 +221,8 @@ export const clientJS = `
             bucketAppKey.value = '';
             bucketName.value = '';
             bucketEndpoint.value = '';
-            bucketIdInput.value = '';
+            internalId.value = generateBucketId();
+            bucketSnippetId.value = '';
             editingIndex.value = '-1';
         } else {
             const bucket = buckets[index];
@@ -230,7 +232,8 @@ export const clientJS = `
             bucketAppKey.value = bucket.applicationKey || '';
             bucketName.value = bucket.bucketName || '';
             bucketEndpoint.value = bucket.endpoint || '';
-            bucketIdInput.value = bucket.id || '';
+            internalId.value = bucket.id || '';
+            bucketSnippetId.value = bucket.snippetId || '';
             editingIndex.value = index;
         }
         bucketModal.style.display = 'flex';
@@ -340,7 +343,8 @@ export const clientJS = `
             const appKey = bucketAppKey.value.trim();
             const bktName = bucketName.value.trim();
             const endpoint = bucketEndpoint.value.trim();
-            const idValue = bucketIdInput.value.trim();
+            const idValue = internalId.value.trim();
+            const snippetId = bucketSnippetId.value.trim();
             const index = parseInt(editingIndex.value);
 
             if (!customName || !keyID || !appKey || !bktName || !endpoint) {
@@ -348,13 +352,19 @@ export const clientJS = `
                 return;
             }
 
+            if (!idValue) {
+                alert('内部ID不能为空，请刷新重试');
+                return;
+            }
+
             const newBucket = {
+                id: idValue,
                 customName,
                 keyID,
                 applicationKey: appKey,
                 bucketName: bktName,
                 endpoint,
-                id: idValue || '',
+                snippetId: snippetId || '',
                 usage: Math.random() * 10,
                 total: 10
             };
@@ -381,10 +391,10 @@ export const clientJS = `
         importJsonBtn.addEventListener('click', () => {
             try {
                 const json = JSON.parse(snippetsJson.value);
-                Object.entries(json).forEach(([customName, id]) => {
+                Object.entries(json).forEach(([customName, snippetId]) => {
                     const bucket = buckets.find(b => b.customName === customName);
                     if (bucket) {
-                        bucket.id = id;
+                        bucket.snippetId = snippetId;
                     } else {
                         console.warn('桶不存在:', customName);
                     }
@@ -403,10 +413,10 @@ export const clientJS = `
         saveJsonBtn.addEventListener('click', () => {
             try {
                 const json = JSON.parse(snippetsJson.value);
-                Object.entries(json).forEach(([customName, id]) => {
+                Object.entries(json).forEach(([customName, snippetId]) => {
                     const bucket = buckets.find(b => b.customName === customName);
                     if (bucket) {
-                        bucket.id = id;
+                        bucket.snippetId = snippetId;
                     } else {
                         console.warn('桶不存在:', customName);
                     }
@@ -932,7 +942,7 @@ export const clientJS = `
     }
 
     // ============================================================================
-    // 11. 队列信息显示（从后端获取真实数据，轮询间隔60秒以减少KV读取）
+    // 11. 队列信息显示（轮询间隔60秒）
     // ============================================================================
 
     const queueMenuBtn = safeGet('queueMenuBtn');
@@ -989,7 +999,6 @@ export const clientJS = `
     function startQueueInfoPolling() {
         if (queueInfoInterval) clearInterval(queueInfoInterval);
         updateQueueInfo();
-        // 为避免 KV 读取操作过频，轮询间隔改为 60 秒
         queueInfoInterval = setInterval(updateQueueInfo, 60000);
     }
 

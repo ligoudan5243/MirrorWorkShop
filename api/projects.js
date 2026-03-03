@@ -15,8 +15,11 @@ export async function handleProject(request, env) {
         return Response.json({ error: '目前仅支持 GitHub 项目完整备份' }, { status: 400 });
     }
 
-    if (!bucketId || bucketId.trim() === '') {
-        return Response.json({ error: 'Bucket ID is required' }, { status: 400 });
+    // 验证桶是否存在
+    const buckets = await getJSON(env.B2_KV, 'buckets');
+    const bucket = buckets.find(b => b.id === bucketId);
+    if (!bucket) {
+        return Response.json({ error: '指定的桶不存在' }, { status: 400 });
     }
 
     const [owner, repo] = name.split('/');
