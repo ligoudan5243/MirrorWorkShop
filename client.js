@@ -198,7 +198,8 @@ export const clientJS = `
     const bucketAppKey = safeGet('bucketAppKey');
     const bucketName = safeGet('bucketName');
     const bucketEndpoint = safeGet('bucketEndpoint');
-    const internalId = safeGet('internalId');
+    const internalId = safeGet('internalId');           // 隐藏字段
+    const displayInternalId = safeGet('displayInternalId'); // 显示元素
     const bucketSnippetId = safeGet('bucketSnippetId');
     const editingIndex = safeGet('editingIndex');
     const importJsonBtn = safeGet('importJsonBtn');
@@ -217,22 +218,27 @@ export const clientJS = `
         if (mode === 'add') {
             bucketModalTitle.innerText = '添加新桶';
             bucketCustomName.value = '';
+            // 生成新内部ID并显示
+            const newId = generateBucketId();
+            if (displayInternalId) displayInternalId.innerText = newId;
+            if (internalId) internalId.value = newId;
             bucketKeyID.value = '';
             bucketAppKey.value = '';
             bucketName.value = '';
             bucketEndpoint.value = '';
-            internalId.value = generateBucketId();
             bucketSnippetId.value = '';
             editingIndex.value = '-1';
         } else {
             const bucket = buckets[index];
             bucketModalTitle.innerText = '编辑桶';
             bucketCustomName.value = bucket.customName || '';
+            // 显示内部ID
+            if (displayInternalId) displayInternalId.innerText = bucket.id || '';
+            if (internalId) internalId.value = bucket.id || '';
             bucketKeyID.value = bucket.keyID || '';
             bucketAppKey.value = bucket.applicationKey || '';
             bucketName.value = bucket.bucketName || '';
             bucketEndpoint.value = bucket.endpoint || '';
-            internalId.value = bucket.id || '';
             bucketSnippetId.value = bucket.snippetId || '';
             editingIndex.value = index;
         }
@@ -343,7 +349,7 @@ export const clientJS = `
             const appKey = bucketAppKey.value.trim();
             const bktName = bucketName.value.trim();
             const endpoint = bucketEndpoint.value.trim();
-            const idValue = internalId.value.trim();
+            const idValue = internalId.value.trim(); // 从隐藏字段取值
             const snippetId = bucketSnippetId.value.trim();
             const index = parseInt(editingIndex.value);
 
