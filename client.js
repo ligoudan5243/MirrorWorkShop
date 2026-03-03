@@ -49,7 +49,7 @@ export const clientJS = `
             buckets = await bucketsRes.json();
             config = await configRes.json();
 
-            // 为每个桶添加模拟使用量（实际应从B2获取，但为了演示保留随机数）
+            // 为每个桶添加模拟使用量（实际应从B2获取）
             buckets = buckets.map(b => ({
                 ...b,
                 usage: b.usage !== undefined ? b.usage : Math.random() * 10,
@@ -932,7 +932,7 @@ export const clientJS = `
     }
 
     // ============================================================================
-    // 11. 队列信息显示（从后端获取真实数据，轮询间隔60秒以减少KV读取）
+    // 11. 队列信息显示（从后端获取真实数据，轮询间隔60秒）
     // ============================================================================
 
     const queueMenuBtn = safeGet('queueMenuBtn');
@@ -944,7 +944,12 @@ export const clientJS = `
     async function updateQueueInfo() {
         try {
             const res = await fetch('/api/queue/status');
-            if (!res.ok) throw new Error('获取队列状态失败');
+            if (!res.ok) {
+                if (res.status === 404) {
+                    throw new Error('QUEUE_NOT_ENABLED');
+                }
+                throw new Error('Failed to fetch queue status');
+            }
             const data = await res.json();
             const tasks = data.tasks || [];
 
@@ -981,16 +986,30 @@ export const clientJS = `
             }
         } catch (e) {
             console.error('更新队列信息失败', e);
-            if (queueFileCount) queueFileCount.innerText = '队列信息不可用';
-            if (queueTaskList) queueTaskList.innerHTML = '<div class="empty-state">加载失败</div>';
+            if (e.message === 'QUEUE_NOT_ENABLED') {
+                // 队列服务未启用，停止轮询并显示提示
+                stopQueueInfoPolling();
+                if (queueTaskList) {
+                    queueTaskList.innerHTML = '<div class="empty-state">队列监控未启用</div>';
+                }
+                if (queueFileCount && queueFileName) {
+                    queueFileCount.style.display = 'none';
+                    queueFileName.style.display = 'inline';
+                    queueFileName.innerText = '队列未启用';
+                }
+            } else {
+                // 其他错误，显示错误信息但不停止轮询
+                if (queueTaskList) {
+                    queueTaskList.innerHTML = '<div class="empty-state">队列信息获取失败</div>';
+                }
+            }
         }
     }
 
     function startQueueInfoPolling() {
         if (queueInfoInterval) clearInterval(queueInfoInterval);
         updateQueueInfo();
-        // 为避免 KV 读取操作过频，轮询间隔改为 60 秒
-        queueInfoInterval = setInterval(updateQueueInfo, 60000);
+        queueInfoInterval = setInterval(updateQueueInfo, 60000); // 60秒轮询
     }
 
     function stopQueueInfoPolling() {
