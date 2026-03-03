@@ -46,8 +46,8 @@ export const s3ConfigHTML = `
                 <label>自定义桶名 <span style="color:#ef4444;">*</span></label>
                 <input type="text" id="bucketCustomName" placeholder="例如: 我的默认桶" required>
             </div>
-            <!-- 内部ID静态文本（紧靠自定义桶名下方，间距缩小） -->
-            <div style="margin: 0 0 0.5rem 0; color: #64748b; font-size: 0.35rem;">
+            <!-- 内部ID静态文本（紧靠自定义桶名下方，无上边距） -->
+            <div style="margin: 0 0 1rem 0; color: #64748b; font-size: 0.85rem;">
                 <span>桶内部ID(内部引用): </span>
                 <span id="displayInternalId" style="font-family: monospace; background: #f1f5f9; padding: 0.1rem 0.3rem; border-radius: 4px;"></span>
             </div>
